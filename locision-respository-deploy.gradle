@@ -1,0 +1,63 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'maven-publish'
+
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        credentials {
+            username locisionRepositoryUser
+            password locisionRepositoryPassword
+        }
+        url "http://maven.locision.com/content/repositories/locision/"
+    }
+}
+
+task sourceJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    baseName = jar.baseName
+    from sourceSets.main.allSource
+}
+project.extensions.create("deploy", DeployPluginExtension);
+
+// To publish to maven local execute "gradle clean publishToMavenLocal"
+// To publish to nexus execute "gradle clean publish"
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifacts = project.deploy.artifacts
+            groupId = group
+            artifactId = project.jar.baseName
+
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+
+                //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
+                configurations.compile.allDependencies.each {
+                    if (it.group) {
+                        def dependencyNode = dependenciesNode.appendNode('dependency')
+                        dependencyNode.appendNode('groupId', it.group)
+                        dependencyNode.appendNode('artifactId', it.name)
+                        dependencyNode.appendNode('version', it.version)
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            credentials {
+                username locisionRepositoryUser
+                password locisionRepositoryPassword
+            }
+            url "http://maven.locision.com/content/repositories/locision/"
+        }
+    }
+}
+
+class DeployPluginExtension {
+    def Iterable artifacts = [];
+}

@@ -1,0 +1,24 @@
+apply plugin: 'idea'
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        credentials {
+            username locisionRepositoryUser
+            password locisionRepositoryPassword
+        }
+        url "http://maven.locision.com/content/repositories/locision/"
+    }
+}
+
+idea {
+    module {
+        // if you hate browsing Javadoc
+        downloadJavadoc = false
+
+        // and love reading sources :)
+        downloadSources = true
+    }
+}
