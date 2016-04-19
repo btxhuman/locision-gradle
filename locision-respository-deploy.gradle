@@ -17,9 +17,9 @@ repositories {
 
 task sourceJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
-    baseName = jar.baseName
     from sourceSets.main.allSource
 }
+
 project.extensions.create("deploy", DeployPluginExtension);
 
 // To publish to maven local execute "gradle clean publishToMavenLocal"
