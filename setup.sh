@@ -5,3 +5,4 @@ nexus_password_config="locisionMavenPassword="$nexus_password
 echo $nexus_user_config > $GRADLE_USER_HOME/gradle.properties
 echo $nexus_password_config >> $GRADLE_USER_HOME/gradle.properties
 cat $GRADLE_USER_HOME/gradle.properties
+echo hello world
