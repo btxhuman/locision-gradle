@@ -12,14 +12,9 @@ RUN apt-get update \
  && echo "$GRADLE_SHA gradle-bin.zip" | sha256sum -c - \
  && unzip "gradle-bin.zip" \
  && ln -s "/usr/lib/gradle-${GRADLE_VERSION}/bin/gradle" /usr/bin/gradle \
- && rm "gradle-bin.zip" \
- && export GRADLE_USER_HOME=$HOME/.gradle \
- && mkdir -p $GRADLE_USER_HOME \
- && nexus_user_config="locisionMavenUser="$nexus_user \
- && nexus_password_config="locisionMavenPassword="$nexus_password \
- && echo $nexus_user_config > $GRADLE_USER_HOME/gradle.properties \
- && echo $nexus_password_config >> $GRADLE_USER_HOME/gradle.properties \
- && cat $GRADLE_USER_HOME/gradle.properties
+ && rm "gradle-bin.zip" 
+
+ADD setup.sh /
 
 # Set Appropriate Environmental Variables
 ENV GRADLE_HOME /usr/lib/gradle
@@ -33,3 +28,5 @@ ENV PATH $PATH:$GRADLE_HOME/bin
 #WORKDIR /usr/bin/app
 #ENTRYPOINT ["gradle"]
 #CMD ["-version"]
+
+CMD ["sh /setup.sh"]
